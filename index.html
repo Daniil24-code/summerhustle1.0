@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SealPro — Summer Hustle 2026</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --black: #0d0d0d;
+      --asphalt: #1a1a1a;
+      --asphalt-mid: #252525;
+      --yellow: #f5c800;
+      --yellow-dim: #c9a400;
+      --white: #f5f0e8;
+      --grey: #888;
+      --light-grey: #bbb;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--black);
+      color: var(--white);
+      font-family: 'DM Sans', sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* ── NOISE OVERLAY ── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0; z-index: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: 0.03;
+      pointer-events: none;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 18px 40px;
+      background: rgba(13,13,13,0.85);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid rgba(245,200,0,0.12);
+    }
+
+    .nav-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 3px;
+      color: var(--yellow);
+    }
+
+    .nav-badge {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--grey);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      padding: 0 40px 80px;
+      overflow: hidden;
+    }
+
+    .hero-bg {
+      position: absolute; inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 60% 50%, rgba(245,200,0,0.07) 0%, transparent 70%),
+        repeating-linear-gradient(
+          90deg,
+          transparent,
+          transparent 59px,
+          rgba(245,200,0,0.04) 59px,
+          rgba(245,200,0,0.04) 60px
+        );
+    }
+
+    .hero-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 4px;
+      color: var(--yellow);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp 0.6s ease forwards 0.2s;
+    }
+
+    .hero h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 15vw, 14rem);
+      line-height: 0.88;
+      letter-spacing: -2px;
+      color: var(--white);
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.4s;
+    }
+
+    .hero h1 span {
+      color: var(--yellow);
+      display: block;
+    }
+
+    .hero-sub {
+      margin-top: 32px;
+      font-size: 1rem;
+      color: var(--light-grey);
+      max-width: 440px;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.65s;
+    }
+
+    .hero-cta {
+      margin-top: 40px;
+      display: flex; gap: 16px; flex-wrap: wrap;
+      opacity: 0;
+      animation: fadeUp 0.7s ease forwards 0.85s;
+    }
+
+    .btn-primary {
+      display: inline-block;
+      background: var(--yellow);
+      color: var(--black);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 16px 36px;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 40px rgba(245,200,0,0.3);
+    }
+
+    .btn-ghost {
+      display: inline-block;
+      border: 1px solid rgba(245,200,0,0.3);
+      color: var(--yellow);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 16px 36px;
+      text-decoration: none;
+      transition: border-color 0.2s, background 0.2s;
+    }
+
+    .btn-ghost:hover {
+      border-color: var(--yellow);
+      background: rgba(245,200,0,0.06);
+    }
+
+    /* ── TICKER ── */
+    .ticker {
+      background: var(--yellow);
+      padding: 12px 0;
+      overflow: hidden;
+      white-space: nowrap;
+    }
+
+    .ticker-inner {
+      display: inline-flex;
+      animation: ticker 18s linear infinite;
+    }
+
+    .ticker span {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 3px;
+      color: var(--black);
+      padding: 0 40px;
+    }
+
+    @keyframes ticker {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+
+    /* ── SECTION WRAPPER ── */
+    section {
+      position: relative; z-index: 1;
+      padding: 100px 40px;
+    }
+
+    .section-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 4px;
+      color: var(--yellow);
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    h2 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.4rem, 6vw, 5rem);
+      letter-spacing: 1px;
+      line-height: 1;
+      color: var(--white);
+      margin-bottom: 16px;
+    }
+
+    /* ── WHAT WE DO ── */
+    .services {
+      background: var(--asphalt);
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin-top: 60px;
+    }
+
+    .service-card {
+      background: var(--asphalt-mid);
+      padding: 48px 40px;
+      position: relative;
+      overflow: hidden;
+      transition: background 0.3s;
+    }
+
+    .service-card:hover { background: #2d2d2d; }
+
+    .service-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0;
+      height: 3px;
+      background: var(--yellow);
+      transform: scaleX(0);
+      transform-origin: left;
+      transition: transform 0.4s ease;
+    }
+
+    .service-card:hover::before { transform: scaleX(1); }
+
+    .service-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 4rem;
+      color: rgba(245,200,0,0.12);
+      line-height: 1;
+      margin-bottom: 16px;
+    }
+
+    .service-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      color: var(--white);
+    }
+
+    .service-desc {
+      color: var(--light-grey);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .service-badge {
+      display: inline-block;
+      margin-top: 20px;
+      background: rgba(245,200,0,0.12);
+      border: 1px solid rgba(245,200,0,0.25);
+      color: var(--yellow);
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 6px 14px;
+    }
+
+    /* ── PROCESS ── */
+    .process { background: var(--black); }
+
+    .process-list {
+      margin-top: 60px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+    }
+
+    .process-item {
+      display: grid;
+      grid-template-columns: 80px 1fr auto;
+      align-items: center;
+      gap: 32px;
+      background: var(--asphalt-mid);
+      padding: 28px 36px;
+      transition: background 0.25s;
+      cursor: default;
+    }
+
+    .process-item:hover { background: #2a2a2a; }
+
+    .process-item .step-num {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.2rem;
+      color: var(--yellow);
+    }
+
+    .process-item .step-title {
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 600;
+      font-size: 1rem;
+      color: var(--white);
+      margin-bottom: 4px;
+    }
+
+    .process-item .step-desc {
+      font-size: 0.85rem;
+      color: var(--grey);
+    }
+
+    .process-item .step-time {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--yellow-dim);
+      letter-spacing: 2px;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    /* ── MONEY ── */
+    .money {
+      background: var(--yellow);
+      color: var(--black);
+    }
+
+    .money .section-label { color: rgba(0,0,0,0.5); }
+    .money h2 { color: var(--black); }
+
+    .money-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 60px;
+    }
+
+    .money-card {
+      background: rgba(0,0,0,0.08);
+      padding: 40px 32px;
+      position: relative;
+    }
+
+    .money-card.highlight {
+      background: var(--black);
+      color: var(--yellow);
+    }
+
+    .money-card.highlight .money-label { color: rgba(245,200,0,0.5); }
+    .money-card.highlight .money-note { color: var(--grey); }
+
+    .money-amount {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .money-label {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.65rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(0,0,0,0.5);
+      margin-bottom: 16px;
+    }
+
+    .money-note {
+      font-size: 0.85rem;
+      color: rgba(0,0,0,0.6);
+      line-height: 1.6;
+    }
+
+    .money-breakdown {
+      margin-top: 60px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+
+    .breakdown-block {
+      background: rgba(0,0,0,0.08);
+      padding: 32px;
+    }
+
+    .breakdown-block .b-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.2rem;
+      letter-spacing: 1px;
+      margin-bottom: 16px;
+    }
+
+    .breakdown-block ul {
+      list-style: none;
+    }
+
+    .breakdown-block ul li {
+      font-size: 0.88rem;
+      color: rgba(0,0,0,0.65);
+      padding: 6px 0;
+      border-bottom: 1px solid rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .breakdown-block ul li span { font-weight: 600; color: var(--black); }
+
+    /* ── TIMELINE ── */
+    .timeline { background: var(--asphalt); }
+
+    .timeline-track {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 2px;
+      margin-top: 60px;
+    }
+
+    .phase {
+      padding: 40px 32px;
+      background: var(--asphalt-mid);
+      position: relative;
+    }
+
+    .phase-tag {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      letter-spacing: 3px;
+      color: var(--yellow);
+      text-transform: uppercase;
+      margin-bottom: 16px;
+    }
+
+    .phase h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.6rem;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      color: var(--white);
+    }
+
+    .phase p {
+      font-size: 0.85rem;
+      color: var(--grey);
+      line-height: 1.7;
+    }
+
+    .phase .phase-money {
+      margin-top: 24px;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2rem;
+      color: var(--yellow);
+    }
+
+    /* ── VIDEO PLACEHOLDER ── */
+    .video-section { background: var(--black); }
+
+    .video-placeholder {
+      margin-top: 60px;
+      background: var(--asphalt-mid);
+      border: 2px dashed rgba(245,200,0,0.2);
+      height: 420px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      cursor: pointer;
+      transition: border-color 0.3s;
+    }
+
+    .video-placeholder:hover { border-color: rgba(245,200,0,0.5); }
+
+    .play-btn {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      background: var(--yellow);
+      display: flex; align-items: center; justify-content: center;
+    }
+
+    .play-btn svg { margin-left: 4px; }
+
+    .video-placeholder p {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.7rem;
+      letter-spacing: 3px;
+      color: var(--grey);
+      text-transform: uppercase;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: var(--black);
+      border-top: 1px solid rgba(245,200,0,0.1);
+      padding: 48px 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 16px;
+    }
+
+    .footer-logo {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.8rem;
+      letter-spacing: 3px;
+      color: var(--yellow);
+    }
+
+    .footer-note {
+      font-family: 'Space Mono', monospace;
+      font-size: 0.6rem;
+      color: var(--grey);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* ── ANIMATIONS ── */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 768px) {
+      nav { padding: 16px 20px; }
+      section { padding: 70px 20px; }
+      .hero { padding: 0 20px 60px; }
+      .services-grid, .money-grid, .timeline-track, .money-breakdown { grid-template-columns: 1fr; }
+      .process-item { grid-template-columns: 60px 1fr; }
+      .process-item .step-time { display: none; }
+      footer { flex-direction: column; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">SealPro</div>
+    <div class="nav-badge">Summer Hustle 2026 &nbsp;·&nbsp; Starting May 25</div>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-tag">↳ The $2,500/week summer operation</div>
+    <h1>Seal.<span>Stack.<br>Repeat.</span></h1>
+    <p class="hero-sub">Driveway coating + window cleaning. Two services. One van. A summer's worth of stacked cash — starting May 25th, 2026.</p>
+    <div class="hero-cta">
+      <a href="#process" class="btn-primary">See the Process</a>
+      <a href="#money" class="btn-ghost">See the Numbers</a>
+    </div>
+  </div>
+
+  <!-- TICKER -->
+  <div class="ticker">
+    <div class="ticker-inner">
+      <span>Driveway Coating</span><span>·</span>
+      <span>Window Cleaning</span><span>·</span>
+      <span>$500+ Daily</span><span>·</span>
+      <span>1–2 hrs per job</span><span>·</span>
+      <span>Starting May 25</span><span>·</span>
+      <span>Driveway Coating</span><span>·</span>
+      <span>Window Cleaning</span><span>·</span>
+      <span>$500+ Daily</span><span>·</span>
+      <span>1–2 hrs per job</span><span>·</span>
+      <span>Starting May 25</span><span>·</span>
+    </div>
+  </div>
+
+  <!-- SERVICES -->
+  <section class="services" id="services">
+    <div class="section-label">01 — What We Offer</div>
+    <h2>Two Services.<br>One System.</h2>
+
+    <div class="services-grid">
+      <div class="service-card">
+        <div class="service-num">01</div>
+        <div class="service-title">Driveway Sealing</div>
+        <p class="service-desc">Professional asphalt sealing — clean, crack-fill, seal. Your driveway gets a fresh blacktop finish that protects and looks sharp. Most homeowners don't even know they need it until they see it done.</p>
+        <div class="service-badge">Core service</div>
+      </div>
+
+      <div class="service-card">
+        <div class="service-num">02</div>
+        <div class="service-title">Window Cleaning</div>
+        <p class="service-desc">Offered as an add-on while the driveway dries. Easy upsell, zero extra travel time. You're already on-site — might as well hit the windows and stack another $50–$100 on the job.</p>
+        <div class="service-badge">Upsell</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROCESS -->
+  <section class="process" id="process">
+    <div class="section-label">02 — How Each Job Goes</div>
+    <h2>The 5-Step<br>Job Flow</h2>
+
+    <div class="process-list">
+
+      <div class="process-item">
+        <div class="step-num">01</div>
+        <div>
+          <div class="step-title">Clean the Driveway</div>
+          <div class="step-desc">Sweep with brooms, blow out all debris with air blower. Surface must be clear before any product goes down.</div>
+        </div>
+        <div class="step-time">~15 min</div>
+      </div>
+
+      <div class="process-item">
+        <div class="step-num">02</div>
+        <div>
+          <div class="step-title">Fill the Cracks</div>
+          <div class="step-desc">Apply crack filler to any gaps or splits in the asphalt. Let set before proceeding. This is what separates a pro job from a rush job.</div>
+        </div>
+        <div class="step-time">~10 min</div>
+      </div>
+
+      <div class="process-item">
+        <div class="step-num">03</div>
+        <div>
+          <div class="step-title">Tape Off the Interlock</div>
+          <div class="step-desc">Mask the edges — interlock, grass line, garage door threshold. Clean lines = happy customers = referrals.</div>
+        </div>
+        <div class="step-time">~10 min</div>
+      </div>
+
+      <div class="process-item">
+        <div class="step-num">04</div>
+        <div>
+          <div class="step-title">Apply Asphalt Sealer</div>
+          <div class="step-desc">Spray the driveway evenly with asphalt sealer. Work in sections, keep it uniform. This is the money shot — the finish that makes driveways look brand new.</div>
+        </div>
+        <div class="step-time">~25 min</div>
+      </div>
+
+      <div class="process-item">
+        <div class="step-num">05</div>
+        <div>
+          <div class="step-title">Block Off + Offer Window Clean</div>
+          <div class="step-desc">Cone off the driveway, give the client a dry time heads-up. While it dries, offer window cleaning. No extra travel, pure added revenue.</div>
+        </div>
+        <div class="step-time">Dry time</div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- EXPLAINER VIDEO -->
+  <section class="video-section" id="video">
+    <div class="section-label">03 — Training</div>
+    <h2>Explainer<br>Video</h2>
+    <div class="video-placeholder">
+      <div class="play-btn">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="#0d0d0d">
+          <polygon points="5,3 19,12 5,21"/>
+        </svg>
+      </div>
+      <p>Video coming soon — insert link here</p>
+    </div>
+  </section>
+
+  <!-- MONEY -->
+  <section class="money" id="money">
+    <div class="section-label">04 — The Numbers</div>
+    <h2>How the<br>Money Moves</h2>
+
+    <div class="money-grid">
+      <div class="money-card">
+        <div class="money-amount">$440</div>
+        <div class="money-label">Base daily (2 driveways @ $220)</div>
+        <p class="money-note">Two driveways a day is achievable once you're efficient. Each one done in 1–2 hours.</p>
+      </div>
+
+      <div class="money-card">
+        <div class="money-amount">+$100</div>
+        <div class="money-label">Window upsell (1–2 per day)</div>
+        <p class="money-note">Offered on-site during dry time. $50–$100 per home — zero extra fuel or travel.</p>
+      </div>
+
+      <div class="money-card highlight">
+        <div class="money-amount">$500+</div>
+        <div class="money-label">Daily potential</div>
+        <p class="money-note">Starting numbers. Gets better as you get faster.</p>
+      </div>
+    </div>
+
+    <div class="money-breakdown">
+      <div class="breakdown-block">
+        <div class="b-title">Early Phase — May 25</div>
+        <ul>
+          <li>Driveways per day <span>2</span></li>
+          <li>Avg price per driveway <span>$220</span></li>
+          <li>Window upsells <span>+$50–100</span></li>
+          <li>Daily take <span>~$500</span></li>
+          <li>Weekly (5 days) <span>$2,500</span></li>
+        </ul>
+      </div>
+
+      <div class="breakdown-block">
+        <div class="b-title">Mid–End Phase Upgrade</div>
+        <ul>
+          <li>Driveways per day <span>2–3</span></li>
+          <li>Upgraded pricing <span>$300–$400</span></li>
+          <li>Daily take <span>$900–$1,200</span></li>
+          <li>Weekly (5 days) <span>$4,000–$5,000</span></li>
+          <li>Strategy <span>Raise + volume</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section class="timeline" id="timeline">
+    <div class="section-label">05 — The Game Plan</div>
+    <h2>Phase by<br>Phase</h2>
+
+    <div class="timeline-track">
+      <div class="phase">
+        <div class="phase-tag">Phase 1 — Launch</div>
+        <h3>May 25 Kickoff</h3>
+        <p>Hit the ground running. 2 driveways a day at $220 each. Learn the job, get fast, and start stacking reviews and referrals. Offer window cleaning on every single job.</p>
+        <div class="phase-money">~$2,500/wk</div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-tag">Phase 2 — Efficiency</div>
+        <h3>Get Efficient</h3>
+        <p>Sub 90-minute jobs. Systemize the setup and teardown. Start booking back-to-back. Route optimize so you're not wasting drive time between jobs.</p>
+        <div class="phase-money">↑ Volume</div>
+      </div>
+
+      <div class="phase">
+        <div class="phase-tag">Phase 3 — Scale</div>
+        <h3>Upgrade + Stack</h3>
+        <p>Push pricing to $300–$400 per driveway. Do 2–3 jobs a day. Weekly income starts hitting $4K–$5K. Consider hiring one helper to push output further.</p>
+        <div class="phase-money">$4–5K/wk</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">SealPro</div>
+    <div class="footer-note">Summer 2026 &nbsp;·&nbsp; Starting May 25th &nbsp;·&nbsp; The Brand Solution</div>
+  </footer>
+
+</body>
+</html>
